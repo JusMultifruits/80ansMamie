@@ -1,0 +1,13 @@
+{
+    "name": "80ansmamie",
+    "authors": [
+	"EmileCadorel",
+	"JusMultifruits"
+    ],
+    "description": "A minimal D web game.",
+    "copyright": "Copyright © 2018, emile",
+    "license": "proprietary",
+    "dependencies" : {
+	"vibe-d" : "~>0.8.0"
+    }    
+}

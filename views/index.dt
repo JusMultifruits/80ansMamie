@@ -1,0 +1,17 @@
+doctype html
+html
+    head 
+        title Welcome
+    body
+        h1 Welcome 
+        p Please enter a username	
+
+        form(action="/room", method="GET")
+            p
+                label(for="id") chat room:
+                input#id(type="text", name="id")
+            p
+                label(for="name") Your name:
+                input#name(type="text", name="name")
+            button(type="submit") Enter
+    
