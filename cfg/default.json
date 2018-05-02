@@ -1,0 +1,4 @@
+{
+    "mongoAddr" : "127.0.0.1",
+    "mongoPort" : -1
+}
