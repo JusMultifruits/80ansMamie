@@ -1,0 +1,43 @@
+- void css (string file)
+  link(rel='stylesheet', type='text/css', href='#{file}')
+
+doctype html
+html
+  head
+    script(src="jquery/jquery.js")
+    script(src="bootstrap/js/moment.js")       
+    script(src="bootstrap/js/transition.js")       
+    script(src="bootstrap/js/collapse.js")       
+    script(src="bootstrap/js/bootstrap.min.js")  
+    script(src="bootstrap/js/bootstrap-datetimepicker.min.js")  
+    script(src="scripts/datetime.js")
+    
+    title Login
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    - css ("bootstrap/css/bootstrap.min.css");
+    - css ("bootstrap/css/bootstrap-datetimepicker.min.css");
+  body
+    h1 Bonjour,
+    p veuillez entrer votre nom, ainsi que votre mois et année de naissance
+    
+    form(action="/login", method="GET")
+      div(class="form-group")
+        p          
+          div(class="row")
+            div(class="col-3")
+            div(class="col-6")
+              label(for="id") Nom : 
+              input#id(class="form-control", type="text", name="nom")
+        p        
+          div(class="row")
+            div(class="col-3")
+            div(class="col-6")
+              label(for="datetimepicker") Date de naissance : 
+              input#datetimepicker(class="form-control", type="text", name="date")
+              
+        div(class="row")
+          div(class="col-3")
+          div(class="col-6")
+            input(type="submit", value="Valider")
+      

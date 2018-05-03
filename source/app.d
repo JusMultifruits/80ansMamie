@@ -1,9 +1,17 @@
 import std.stdio, std.datetime;
 import utils.Options, database.Collection;
+import web.Application;
 
+import utils.json;
+
+
+/**
+   On peut difficilement faire plus court
+*/
 void main (string [] args) {
+    // Charge le fichier de config
     Options.init (args);
-    Collection.updateQuestion ("De quelle couleurs est le vert ?",
-			       ["bleu", "jaune", "pas compris la question"],
-			       [false, false, true]);
+
+    // Lance l'application
+    Application.run ();
 }

@@ -6,10 +6,13 @@ import std.file;
 
 alias Options = IOptions.instance;
 
+/**
+   Le fichier de config en gros, accéssible par tout le monde
+ */
 class IOptions {
 
     private JSONValue _configFile;
-    private string _configFileName = "default.json";
+    private string _configFileName = "cfg/default.json";
     
     void init (string [] args) {
 	auto res = getopt (args, "config-file", &_configFileName, "cfg", &_configFileName);

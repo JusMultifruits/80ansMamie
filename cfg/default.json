@@ -1,4 +1,17 @@
 {
     "mongoAddr" : "127.0.0.1",
-    "mongoPort" : -1
+    "mongoPort" : -1,
+    "mongoBase" : {
+	"name" : "anniv",
+	"users" : "utilisateurs",
+	"questions" : "questions"
+    },
+    
+    "app" : 1,
+    "web" : {
+	"port" : 8080,
+	"ipv6" : "::",
+	"ipv4" : "0.0.0.0"
+    }
+    
 }
