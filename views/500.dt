@@ -31,7 +31,7 @@ html
       div(class="col-3")
       div(class="col-6")
         h3 ou alors 
-        form(action="begin", method="GET")
+        form(action="/begin", method="GET")
         div(class="form-group")
           label(for="home") Appuie ici pour retourner à l'acceuil : 
           input#home(class="form-control", type="submit", value="Retourner sur le droit chemin")

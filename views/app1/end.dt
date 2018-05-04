@@ -22,17 +22,10 @@ html
     form(action="logout", method="GET")
       div(class="row")
         div(class="col-6")
-          h1 Bienvenue - #{login.nom}
         div(class="col-3")
         div(class="col-3")
           div(class="form-group")
             input(class="form-control", type="submit", value="Deconnexion")
     
-    form(action="quest", method="GET")
-      div(class="row")
-        div(class="col-3")
-        div(class="col-6")
-          div(class="form-group")
-            input(class="form-control", type="submit", value="Commencer le questionnaire")
-    
+    p désolé il n'y a plus rien à faire pour le moment
       

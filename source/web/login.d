@@ -3,8 +3,11 @@ module web.login;
 import vibe.d;
 import database.Collection;
 import database.Utilisateur;
+import database.Question;
 import std.datetime, std.string;
 import std.stdio, std.conv;
+import std.typecons;
+
 
 /**
    Le controleur web qui va gérer les questions de la première phase
@@ -67,6 +70,28 @@ final class LoginPage {
 	}
     }
 
+    void getQuest () {
+	if (!this.session || !this.session.isKeySet ("user")) 
+	    render!"app1/login.dt";
+	else {
+	    auto user = this.session.get!Utilisateur ("user");
+	    auto deter = this.getCurrentQuestion (user);
+	    if (deter [0] == -1) {
+		render!"app1/end.dt";
+	    } else {
+		auto question = deter [1];
+		final switch (deter [0]) {
+		case 0 : render!("app1/q0.dt", question); break;
+		case 1 : render!("app1/q1.dt", question); break;
+		case 2 : render!("app1/q2.dt", question); break;
+		case 3 : render!("app1/q3.dt", question); break;
+		case 4 : render!("app1/q4.dt", question); break;
+		case 5 : render!("app1/q5.dt", question); break;		    
+		}
+	    }
+	}
+    }
+
     void getLogout () {
 	response.terminateSession ();
 	render!"app1/login.dt";
@@ -92,8 +117,27 @@ final class LoginPage {
 	    return request.session;
 	}
 	
-	Question getCurrentQuestion (Utilisateur user) {
-	    
+	Tuple!(int, Determinant) getCurrentQuestion (Utilisateur user) {
+	    /*auto deters = Collection.allDeterminants ();
+	    auto nb = Collection.getDeterReponsesFromUserId (user.id);
+	    if (nb.length == deters.length) {
+		return tuple (-1, Determinant.init);
+	    } else {
+		return tuple (cast(int) nb.length, deters [nb.length]);
+		}*/
+
+	    auto val = Determinant (
+		BsonObjectID.generate (),
+		"Quelle est ta couleur préféré ?",
+		[
+		    ComplexeReponse (["value" : "bleue", "data" : "#0000FF"]),
+		    ComplexeReponse (["value" : "vert", "data" : "#00FF00"]),
+		    ComplexeReponse (["value" : "rouge", "data" : "#FF0000"]),
+		    ComplexeReponse (["value" : "jaune", "data" : "#FFFF00"]),
+		    ComplexeReponse (["value" : "moche", "data" : "#00FFFF"])
+		]		
+	    );
+	    return tuple (0, val);
 	}
 
     }

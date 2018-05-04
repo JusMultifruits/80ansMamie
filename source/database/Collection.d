@@ -14,7 +14,9 @@ class ICollection {
     private MongoClient _client;
     private MongoCollection _questions;
     private MongoCollection _utilisateurs;
-
+    private MongoCollection _determinant;
+    private MongoCollection _reponses;
+    
     /**
        Initialise l'accés à la base de données
        Le format du fichier de config doit être le suivant : 
@@ -26,7 +28,9 @@ class ICollection {
 	   "mongoBase" : {
 	       "name" : "anniv",
 	       "questions" : "questions",
-	       "users" : "utilisateurs"
+	       "users" : "utilisateurs",
+	       "determiners" : "determinant",
+	       "reponses" : "reps"
 	   }
        }
        ----------
@@ -42,10 +46,14 @@ class ICollection {
 	auto base = Options.configFile ["mongoBase"]["name"].str;
 	auto qu = Options.configFile ["mongoBase"]["questions"].str;
 	auto us = Options.configFile ["mongoBase"]["users"].str;
-
+	auto deter = Options.configFile ["mongoBase"]["determiners"].str;
+	auto reps = Options.configFile ["mongoBase"]["reponses"].str;
+	
 	// Récupération des tables
 	this._questions = this._client.getCollection (base ~ "." ~ qu);
 	this._utilisateurs = this._client.getCollection (base ~ "." ~ us);	
+	this._determinant = this._client.getCollection (base ~ "." ~ deter);
+	this._reponses = this._client.getCollection (base ~ "." ~ reps);
     }
 
     /**
@@ -228,6 +236,42 @@ class ICollection {
 	}
 	return res.array ();
     }
+
+    /**
+       Returns: tous les determinant
+     */
+    Determinant [] allDeterminants () {
+	auto deters = this._determinant.find!Determinant ();
+	Array!Determinant res;
+	foreach (it ; deters.byPair)
+	    res.insert (it [1]);
+	return res.array ();
+    }
+
+    /**
+       Insert ou remplace une réponse x, de l'utilisateur u, au déterminant d
+       Params: 
+       - u, u un utilisateur
+       - d, le determinant
+       - x, le numéro de la réponse
+    */
+    void iorReponseToDeterminer (Utilisateur u, Determinant d, uint x) {
+	Nullable!DeterReponse res = this._reponses.findOne!(DeterReponse) (["user" : u.id, "deter" : d.id]);
+	if (!res.isNull) {
+	    res.reponse = x;
+	    this._reponses.update (["user" : u.id, "deter" : d.id], res);
+	} else
+	    this._reponses.insert (DeterReponse (u.id, d.id, x));
+    }
+
+    DeterReponse [] getDeterReponsesFromUserId (BsonObjectID id) {
+	auto reps = this._reponses.find!DeterReponse (["user" : id]);
+	Array!DeterReponse res;
+	foreach (it ; reps.byPair)
+	    res.insert (it[1]);
+	return res.array ();
+    }
+
     
     mixin Singleton;
 }

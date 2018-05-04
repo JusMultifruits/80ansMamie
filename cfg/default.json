@@ -4,7 +4,9 @@
     "mongoBase" : {
 	"name" : "anniv",
 	"users" : "utilisateurs",
-	"questions" : "questions"
+	"questions" : "questions",
+	"determiners" : "determinant",
+	"reponses" : "reponse"
     },
     
     "app" : 1,

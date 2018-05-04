@@ -3,6 +3,7 @@ module database.Utilisateur;
 import vibe.d;
 import std.conv;
 import std.string, std.algorithm, std.uni : isWhite;
+import database.Question;
 
 struct Utilisateur {
     @name ("_id") BsonObjectID id;
@@ -10,7 +11,6 @@ struct Utilisateur {
     string identifiant;
     short mois;
     short annee;
-    Reponse [] completed;
     
     /**
        Returns: le nom sous forme poli ^^, jean paul -> Jean Paul
@@ -44,10 +44,6 @@ struct Utilisateur {
     */
     static string computeId (string nom, short mois, short annee) {
 	return simplifyName (nom) ~ "_" ~ mois.to!string ~ "_" ~ annee.to!string;
-    }
-
-    void answer (Reponse x) {
-	this.completed ~= [x];
     }
     
 }

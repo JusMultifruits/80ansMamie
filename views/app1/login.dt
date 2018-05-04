@@ -9,32 +9,35 @@ html
     script(src="bootstrap/js/transition.js")       
     script(src="bootstrap/js/collapse.js")       
     script(src="bootstrap/js/bootstrap.min.js")  
-    script(src="bootstrap/js/bootstrap-datetimepicker.min.js")  
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js")
     script(src="scripts/datetime.js")
     
     title Login
     meta(charset="utf-8")
     meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
     - css ("bootstrap/css/bootstrap.min.css");
-    - css ("bootstrap/css/bootstrap-datetimepicker.min.css");
+    //- - css ("bootstrap/css/bootstrap-datetimepicker.min.css");
+    - css ("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css");
   body
     h1 Bonjour,
     p veuillez entrer votre nom, ainsi que votre mois et année de naissance
     
     form(action="login", method="GET")
-      div(class="form-group")
-        p          
-          div(class="row")
-            div(class="col-3")
-            div(class="col-6")
+      p          
+        div(class="row")
+          div(class="col-xs-1 col-sm-1 col-md-3")
+          div(class="col-xs-10 col-sm-10 col-md-6")              
+            div(class="form-group")
               label(for="id") Nom : 
               input#id(class="form-control", type="text", name="nom", required="true")
-        p        
+      p        
+        div(class="container")
           div(class="row")
-            div(class="col-3")
-            div(class="col-6")
-              label(for="datetimepicker") Date de naissance : 
-              input#datetimepicker(class="form-control", type="text", name="date", required="true")
+            div(class="col-xs-1 col-sm-1 col-md-3")
+            div(class="col-xs-10 col-sm-10 col-md-6")              
+              div(class="form-group") 
+                label(for="id") Date de naissance : 
+                input#datepicker(class="form-control", type="text", name="date", required="true")
               
         div(class="row")
           div(class="col-3")

@@ -75,6 +75,7 @@ final class IApplication {
     }    
 
     private void _errorPage (HTTPServerRequest req, HTTPServerResponse res, HTTPServerErrorInfo error) {
+	logInfo (error.debugMessage);
 	switch (error.code) {
 	case 404 : res.render!("404.dt"); break;
 	case 500 : res.render!("500.dt"); break;
