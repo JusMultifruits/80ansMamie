@@ -60,6 +60,9 @@ final class IApplication {
 	this._settings.bindAddresses = [Options.configFile ["web"]["ipv6"].str,
 					Options.configFile ["web"]["ipv4"].str];	
 	
+	this._settings.errorPageHandler (&this._errorPage);
+	this._settings.sessionStore = new MemorySessionStore;
+	
 	listenHTTP (this._settings, this._router);
 	logInfo ("Please open http://" ~ Options.configFile ["web"]["ipv4"].str ~ ":" ~ Options.configFile ["web"]["port"].integer.to!string);
     }
@@ -70,6 +73,14 @@ final class IApplication {
     void run () {
 	runApplication ();
     }    
+
+    private void _errorPage (HTTPServerRequest req, HTTPServerResponse res, HTTPServerErrorInfo error) {
+	switch (error.code) {
+	case 404 : res.render!("404.dt"); break;
+	case 500 : res.render!("500.dt"); break;
+	default : res.render!("500.dt"); break;
+	}
+    }
     
     mixin Singleton;
 }

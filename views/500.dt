@@ -1,0 +1,38 @@
+- void css (string file)
+  link(rel='stylesheet', type='text/css', href='#{file}')
+
+doctype html
+html
+  head
+    script(src="jquery/jquery.js")
+    script(src="bootstrap/js/bootstrap.min.js")  
+    
+    title Login
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    - css ("bootstrap/css/bootstrap.min.css");
+  body
+    div(class="row")
+      div(class="col-3")
+      div(class="col-6")
+        h1 500 fatal error
+        
+    div(class="row")
+      div(class="col-3")
+      div(class="col-6")
+        h1 Mais... tu as tout cassé !!!      
+
+    div(class="row")
+      div(class="col-3")
+      div(class="col-6")
+        h2 Cours vite me prévenir
+        
+    div(class="row")
+      div(class="col-3")
+      div(class="col-6")
+        h3 ou alors 
+        form(action="begin", method="GET")
+        div(class="form-group")
+          label(for="home") Appuie ici pour retourner à l'acceuil : 
+          input#home(class="form-control", type="submit", value="Retourner sur le droit chemin")
+    

@@ -21,23 +21,23 @@ html
     h1 Bonjour,
     p veuillez entrer votre nom, ainsi que votre mois et année de naissance
     
-    form(action="/login", method="GET")
+    form(action="login", method="GET")
       div(class="form-group")
         p          
           div(class="row")
             div(class="col-3")
             div(class="col-6")
               label(for="id") Nom : 
-              input#id(class="form-control", type="text", name="nom")
+              input#id(class="form-control", type="text", name="nom", required="true")
         p        
           div(class="row")
             div(class="col-3")
             div(class="col-6")
               label(for="datetimepicker") Date de naissance : 
-              input#datetimepicker(class="form-control", type="text", name="date")
+              input#datetimepicker(class="form-control", type="text", name="date", required="true")
               
         div(class="row")
           div(class="col-3")
           div(class="col-6")
-            input(type="submit", value="Valider")
+            input(type="submit", value="Valider", class="form-control")
       

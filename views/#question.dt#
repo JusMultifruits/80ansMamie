@@ -19,9 +19,23 @@ html
     - css ("bootstrap/css/bootstrap-datetimepicker.min.css");
 
   body
-    - if(isBack)
-      h1 Bon retour - #{login.nom}
-      p Votre identifiant unique est #{login.identifiant}
-    - else
-      h1 Bienvenue - #{login.nom}
-      p Votre identifiant unique est #{login.identifiant}
+    form(action="logout", method="GET")
+o      div(class="row")
+        div(class="col-6")
+          h1 Bienvenue - #{login.nom}
+        div(class="col-3")
+        div(class="col-3")
+          div(class="form-group")
+            input(class="form-control", type="submit", value="Deconnexion")
+    
+    form(action="quest", method="GET")
+      div(class="row")
+        div(class="col-3")
+        div(class="col-6")
+          div(class="form-group")
+            input(class="form-control", type="submit", value="Commencer le questionnaire")
+            
+    p Votre identifiant unique est #{login.identifiant}
+    
+    
+      
