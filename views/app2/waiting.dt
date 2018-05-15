@@ -1,0 +1,9 @@
+html
+  head
+    title WebSocket Test
+    script(type="text/javascript", src="/scripts/app2/websocket.js")
+
+  body(onLoad="connect()")
+    p The following box should show a running counter, updated by the server:</p>
+    pre(id="timer")
+    button(type="button", onclick="closeConnection()")
