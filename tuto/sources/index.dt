@@ -1,0 +1,13 @@
+html
+  head
+  body
+    form(action="/login", method="POST")
+      input(type="text", name="nom")
+      input(type="text", name="prenom")
+      input(type="submit", value="Envoyer")
+  
+      
+html
+  head
+  body
+    h1 Bienvenue #{prenom} #{nom}
