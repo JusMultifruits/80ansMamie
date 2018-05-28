@@ -3,13 +3,27 @@ function addRep () {
 }
 
 function sendServer () {
-    var reps = [];
+    var ans = [];
     var values = $('input.input-rep');
     for (var i = 0 ; i < values.length ; i++) {
-	reps.push (values [i].value);
+	ans.push ('"' + values [i].value + '"');
+	if (values [i].value == "") {
+	    alert ("Champ " + (i + 1) + " vide");
+	    return;
+	}
     }
+
+    if ($('#id') [0].value == "") {
+	alert ("Question vide");
+	return;
+    }
+
     console.log (i);
     var xhttp = new XMLHttpRequest ();
-    xhttp.open ("GET", "add_deter?quest=" + $('#id') [0].value + "&answers=[" + reps + "]");
+    
+    var reps = '{ "ans" : [' + ans + ']}';
+    xhttp.open ("GET", "add_deter?quest=" + $('#id') [0].value + "&answers=" + reps);
     xhttp.send ();
+    $('#multi')[0].innerHTML = "";
+    $('#id')[0].value = "";
 }

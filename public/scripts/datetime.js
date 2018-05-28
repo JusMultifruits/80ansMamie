@@ -1,11 +1,13 @@
 $(function () {
-    $('input#datepicker').datepicker({
-	format: "yyyy-mm-dd",
-	startView: 1,
-	minViewMode: 1,
-	maxViewMode: 3,
-	autoclose: true,
-	language: "fr",
-	orientation: "bottom right"
+    $('.form_date').datetimepicker ({
+	language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+	autoclose: 1,
+	todayHighlight: 1,
+	startView: 2,
+	minView: 2,
+	forceParse: 0
+
     });
 });
