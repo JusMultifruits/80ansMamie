@@ -23,6 +23,7 @@ final class Phase2Controller {
     private Session _session;
     
     void get () {
+	logInfo (request.clientAddress.toAddressString);
 	render!"app2/waiting.dt";
     }    
         

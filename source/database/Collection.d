@@ -237,6 +237,10 @@ class ICollection {
 	return res.array ();
     }
 
+    void insertDeterminant (Determinant deter) {
+	this._determinant.insert (deter);
+    }
+    
     /**
        Returns: tous les determinant
      */

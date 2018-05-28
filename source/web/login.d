@@ -6,8 +6,22 @@ import database.Utilisateur;
 import database.Question;
 import std.datetime, std.string;
 import std.stdio, std.conv;
-import std.typecons;
+import std.typecons, std.json;
 
+void questionWebHandler (scope WebSocket socket) {
+    logInfo ("Get new web connection");    
+    socket.send (q{
+	    {
+		"id" : 0,
+		    "name" : "Quelle est votre couleur préférée ?",
+		    "answers" : [{"data" : "#0000FF", "value" : "bleue"},
+				 {"data" : "#00FF00", "value" : "vert"},
+				 {"data" : "#FF0000", "value" : "rouge"},
+				 {"data" : "#FFFF00", "value" : "jaune"}
+		    ]
+		    }
+	});
+}
 
 /**
    Le controleur web qui va gérer les questions de la première phase
@@ -80,14 +94,7 @@ final class LoginPage {
 		render!"app1/end.dt";
 	    } else {
 		auto question = deter [1];
-		final switch (deter [0]) {
-		case 0 : render!("app1/q0.dt", question); break;
-		case 1 : render!("app1/q1.dt", question); break;
-		case 2 : render!("app1/q2.dt", question); break;
-		case 3 : render!("app1/q3.dt", question); break;
-		case 4 : render!("app1/q4.dt", question); break;
-		case 5 : render!("app1/q5.dt", question); break;		    
-		}
+		render!("app1/dynamic.dt", question);
 	    }
 	}
     }
@@ -97,6 +104,16 @@ final class LoginPage {
 	render!"app1/login.dt";
     }
 
+    void getAnswer (int id, int ans) {
+	if (!this.session || !this.session.isKeySet ("user"))
+	    render!"app1/login.dt";
+	else {
+	    auto user = this.session.get!Utilisateur ("user");
+	    auto deter = Collection.allDeterminants () [id];
+	    Collection.iorReponseToDeterminer (user, deter, ans);
+	}
+    }
+    
     private {    
     
 	/**
@@ -130,11 +147,8 @@ final class LoginPage {
 		BsonObjectID.generate (),
 		"Quelle est ta couleur préféré ?",
 		[
-		    ComplexeReponse (["value" : "bleue", "data" : "#0000FF"]),
-		    ComplexeReponse (["value" : "vert", "data" : "#00FF00"]),
-		    ComplexeReponse (["value" : "rouge", "data" : "#FF0000"]),
-		    ComplexeReponse (["value" : "jaune", "data" : "#FFFF00"]),
-		    ComplexeReponse (["value" : "moche", "data" : "#00FFFF"])
+		    ComplexeReponse ("bleue", "#0000FF"),
+		    ComplexeReponse ("vert", "#00FF00")
 		]		
 	    );
 	    return tuple (0, val);

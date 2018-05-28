@@ -4,6 +4,7 @@ import utils.Singleton;
 import utils.Options;
 import web.login;
 import web.Phase2;
+import web.Admin;
 import vibe.d;
 
 alias Application = IApplication.instance;
@@ -44,7 +45,13 @@ final class IApplication {
 	
 	// Lancement du controleur adapté à l'application
 	final switch (Options.configFile ["app"].integer) {
-	case AppType.FIRST_PHASE : this._router.registerWebInterface (new LoginPage ()); break;
+	case AppType.FIRST_PHASE : {
+	    this._router.registerWebInterface (new LoginPage ());
+	    this._router.get ("/ws", handleWebSockets (&questionWebHandler));
+	} break;	    
+	case AppType.ADMIN : {
+	    this._router.registerWebInterface (new AdminController ());
+	} break;
 	case AppType.COMPETITION : {
 	    this._router.registerWebInterface (new Phase2Controller ());
 	    this._router.get ("/ws", handleWebSockets (&phase2WebHandler));
