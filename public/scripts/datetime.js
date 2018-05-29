@@ -2,10 +2,9 @@ $(function () {
     $('.form_date').datetimepicker ({
 	language:  'fr',
         weekStart: 1,
-        todayBtn:  1,
 	autoclose: 1,
-	todayHighlight: 1,
-	startView: 2,
+	todayHighlight: 0,
+	startView: 4,
 	minView: 2,
 	forceParse: 0
 
