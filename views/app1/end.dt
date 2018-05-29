@@ -3,15 +3,7 @@
 
 doctype html
 html
-  head
-    script(src="jquery/jquery.js")
-    script(src="bootstrap/js/moment.js")       
-    script(src="bootstrap/js/transition.js")       
-    script(src="bootstrap/js/collapse.js")       
-    script(src="bootstrap/js/bootstrap.min.js")  
-    script(src="bootstrap/js/bootstrap-datetimepicker.min.js")  
-    script(src="scripts/datetime.js")
-    
+  head    
     title Bienvenue
     meta(charset="utf-8")
     meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
@@ -19,13 +11,18 @@ html
     - css ("bootstrap/css/bootstrap-datetimepicker.min.css");
 
   body
-    form(action="logout", method="GET")
-      div(class="row")
-        div(class="col-6")
-        div(class="col-3")
-        div(class="col-3")
+    div(class="container")
+      form(action="logout", method="GET")
+        div(class="row")
           div(class="form-group")
             input(class="form-control", type="submit", value="Deconnexion")
     
-    p désolé il n'y a plus rien à faire pour le moment
-      
+      p désolé il n'y a plus rien à faire pour le moment
+
+    script(src="jquery/jquery.js")
+    script(src="bootstrap/js/moment.js")       
+    script(src="bootstrap/js/transition.js")       
+    script(src="bootstrap/js/collapse.js")       
+    script(src="bootstrap/js/bootstrap.min.js")  
+    script(src="bootstrap/js/bootstrap-datetimepicker.min.js")  
+    script(src="scripts/datetime.js")

@@ -14,14 +14,12 @@ html
     - css ("bootstrap/css/bootstrap.min.css");
     - css ("css/radios.css");
     
-  body(onLoad="connect()")
-    div(class="row")
-      div(class="col-xs-0 col-sm-0 col-md-3 col-lg-3")
-      div(class="col-xs-12 col-sm-12 col-md-6 col-lg-6")
-        h4(id="Question")        
-    div(id="Answers", class="row form-group product-chooser")
-    div(class="row")
-      div(class="col-8")
-      div(class="col-4")
-        input#suivant(class="form-control", type="submit", value="suivant", onclick="loadNext ()")
+  body(onLoad="connect(\"#{user.identifiant}\")")
+    div(class="container")
+      div(class="row")
+        h2(id="Question")        
+      
+      div(id="Answers", class="row form-group product-chooser")
+      div(class="row")
+        input#suivant(class="form-control", type="submit", value="suivant", onclick="connect (\"#{user.identifiant}\")")
     

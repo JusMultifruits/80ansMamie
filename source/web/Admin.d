@@ -11,6 +11,10 @@ final class AdminController {
 	render!"admin/index.dt";
     }
 
+    void getBegin () {
+	render!"admin/index.dt";
+    }
+    
     void getIndex () {
 	render!"admin/index.dt";
     }
@@ -19,6 +23,19 @@ final class AdminController {
 	render!"admin/addDeter.dt";
     }
 
+    void getRedir_list_deter () {
+	auto deters = Collection.allDeterminants (); 
+	render!("admin/listDeters.dt", deters);
+    }
+
+    void getRemove_deter (int id) {
+	auto deter = Collection.allDeterminants () [id];
+	Collection.removeDeterminant (deter.id);
+	logInfo (deter.to!string);
+	auto deters = Collection.allDeterminants (); 
+	render!("admin/listDeters.dt", deters);
+    }
+    
     void getAdd_deter (string quest, string answers) {
 	logInfo (quest);
 	logInfo (answers);
@@ -28,7 +45,7 @@ final class AdminController {
 	
 	Determinant deter = Determinant (BsonObjectID.generate (), quest, []);
 	foreach (it ; reps) {
-	    deter.reponses ~= [ComplexeReponse(it.str, "")];
+	    deter.reponses ~= [ComplexeReponse(it.str)];
 	}
 	Collection.insertDeterminant (deter);
 	render!"admin/addDeter.dt";

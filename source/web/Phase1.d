@@ -1,4 +1,4 @@
-module web.login;
+module web.Phase1;
 
 import vibe.d;
 import database.Collection;
@@ -9,24 +9,26 @@ import std.stdio, std.conv;
 import std.typecons, std.json;
 
 void questionWebHandler (scope WebSocket socket) {
-    logInfo ("Get new web connection");    
-    socket.send (q{
-	    {
-		"id" : 0,
-		    "name" : "Quelle est votre couleur préférée ?",
-		    "answers" : [{"data" : "#0000FF", "value" : "bleue"},
-				 {"data" : "#00FF00", "value" : "vert"},
-				 {"data" : "#FF0000", "value" : "rouge"},
-				 {"data" : "#FFFF00", "value" : "jaune"}
-		    ]
-		    }
-	});
+    logInfo ("Get new web connection");
+    auto userId = socket.receiveText;
+    auto user = Collection.findUserById (userId);
+    if (!user.isNull) {
+	auto nb = Collection.getDeterReponsesFromUserId (user.id);
+	auto deter = Collection.allDeterminants ();
+	if (nb.length >= deter.length) {
+	    socket.send ("EOF"); 
+	} else {
+	    auto json = deter [nb.length].serializeToJson ();
+	    json ["nb"] = nb.length;
+	    socket.send (json.toString ());
+	}
+    }
 }
 
 /**
    Le controleur web qui va gérer les questions de la première phase
  */
-final class LoginPage {
+final class Phase1Controller {
 
     /**
        La session va servir à stocker les informations de la connexion
@@ -89,13 +91,7 @@ final class LoginPage {
 	    render!"app1/login.dt";
 	else {
 	    auto user = this.session.get!Utilisateur ("user");
-	    auto deter = this.getCurrentQuestion (user);
-	    if (deter [0] == -1) {
-		render!"app1/end.dt";
-	    } else {
-		auto question = deter [1];
-		render!("app1/dynamic.dt", question);
-	    }
+	    render!("app1/dynamic.dt", user);	    
 	}
     }
 
@@ -109,8 +105,10 @@ final class LoginPage {
 	    render!"app1/login.dt";
 	else {
 	    auto user = this.session.get!Utilisateur ("user");
+	    logInfo ("ici ", " ", id, " ", ans);
 	    auto deter = Collection.allDeterminants () [id];
 	    Collection.iorReponseToDeterminer (user, deter, ans);
+	    render!("app1/dynamic.dt", user);
 	}
     }
     
@@ -132,26 +130,6 @@ final class LoginPage {
 	*/
 	Session session () {
 	    return request.session;
-	}
-	
-	Tuple!(int, Determinant) getCurrentQuestion (Utilisateur user) {
-	    /*auto deters = Collection.allDeterminants ();
-	    auto nb = Collection.getDeterReponsesFromUserId (user.id);
-	    if (nb.length == deters.length) {
-		return tuple (-1, Determinant.init);
-	    } else {
-		return tuple (cast(int) nb.length, deters [nb.length]);
-		}*/
-
-	    auto val = Determinant (
-		BsonObjectID.generate (),
-		"Quelle est ta couleur préféré ?",
-		[
-		    ComplexeReponse ("bleue", "#0000FF"),
-		    ComplexeReponse ("vert", "#00FF00")
-		]		
-	    );
-	    return tuple (0, val);
 	}
 
     }

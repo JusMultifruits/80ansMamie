@@ -1,10 +1,11 @@
 var socket;
 
-function connect () {
+function connect (userId) {
     setText ("connexion ...");
     socket = new WebSocket (getBaseURL () + "/ws");
     socket.onopen = function () {
-	setText ("Connecté, en attente des données ...");	
+	setText ("Connecté, en attente des données ...");
+	socket.send (userId);
     }
 
     socket.onmessage = function (message) {
@@ -36,16 +37,28 @@ function getBaseURL () {
 }
 
 function writeQuestion (message) {
-    var question = JSON.parse (message);
-    document.getElementById ("Question").innerHTML = question.name;
-    for (var i = 0 ; i < question.answers.length ; i++) {
-	writeNewAnswer (question.answers [i], i, question.id);
+    document.getElementById("Answers").innerHTML = "";
+    if (message == "EOF") {
+	document.getElementById ("Question").innerHTML = "Désolé plus de question pour le moment";
+	document.getElementById ("suivant").style.display = "none";
+	$("#Answers").append ('<form action="logout" method="GET"> \
+                                  <div class="form-group col-md-12"> \
+                                    <input type="submit" class="form-control" value="Deconnexion"/> \
+</div> \
+</form>');
+    } else {
+	var question = JSON.parse (message);
+	document.getElementById ("Question").innerHTML = question.texte;
+	for (var i = 0 ; i < question.reponses.length ; i++) {
+	    writeNewAnswer (question.reponses [i], i, question.nb);
+	}
+	reloadRadios ();
     }
-    reloadRadios ();
 }
 
 function sendServer (i, deter) {
     var xhttp = new XMLHttpRequest ();
+    console.log (deter, " ", i);
     xhttp.open ("GET", "answer?id=" + deter + "&ans=" + i, true);
     xhttp.send ();
 }
@@ -54,7 +67,7 @@ function writeNewAnswer (answer, i, deter) {
     $("#Answers").append ('<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> \
                               <div class="product-chooser-item" onclick="sendServer (' + i + ', ' + deter + ')"> \
                                   <div class="col-12"> \
-                                      <div class="card col-12 text-center" style="background-color:' + answer.data + ';"> \
+                                      <div class="card col-12 text-center"> \
                                          <div class="card-body"> \
                                            <h5 class="card-title">' + answer.value + '</h5> \
                                          </div> \
@@ -74,3 +87,6 @@ function reloadRadios () {
     });
 }
 
+function security () {
+    document.getElementById ("dtp_input2").required = true;
+}

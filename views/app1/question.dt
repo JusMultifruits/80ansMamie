@@ -4,13 +4,6 @@
 doctype html
 html
   head
-    script(src="jquery/jquery.js")
-    script(src="bootstrap/js/moment.js")       
-    script(src="bootstrap/js/transition.js")       
-    script(src="bootstrap/js/collapse.js")       
-    script(src="bootstrap/js/bootstrap.min.js")  
-    script(src="bootstrap/js/bootstrap-datetimepicker.min.js")  
-    script(src="scripts/datetime.js")
     
     title Bienvenue
     meta(charset="utf-8")
@@ -19,23 +12,27 @@ html
     - css ("bootstrap/css/bootstrap-datetimepicker.min.css");
 
   body
-    form(action="logout", method="GET")
-      div(class="row")
-        div(class="col-6")
+    div(class="container")
+      form(action="logout", method="GET")
+        div(class="row")  
+          div(class="col-md-6")
           h1 Bienvenue - #{login.nom}
-        div(class="col-3")
-        div(class="col-3")
-          div(class="form-group")
-            input(class="form-control", type="submit", value="Deconnexion")
+          div(class="col-md-3)"
+          div(class="col-md-3")
+            div(class="form-group")
+              input(class="form-control", type="submit", value="Deconnexion")
     
     form(action="quest", method="GET")
       div(class="row")
-        div(class="col-3")
-        div(class="col-6")
-          div(class="form-group")
-            input(class="form-control", type="submit", value="Commencer le questionnaire")
+        div(class="form-group")
+          input(class="form-control", type="submit", value="Commencer le questionnaire")
             
-    p Votre identifiant unique est #{login.identifiant}
+    p Votre identifiant unique est #{login.identifiant}    
     
-    
-      
+    script(src="jquery/jquery.js")
+    script(src="bootstrap/js/moment.js")       
+    script(src="bootstrap/js/transition.js")       
+    script(src="bootstrap/js/collapse.js")       
+    script(src="bootstrap/js/bootstrap.min.js")  
+    script(src="bootstrap/js/bootstrap-datetimepicker.min.js")  
+    script(src="scripts/datetime.js")

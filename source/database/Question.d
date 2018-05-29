@@ -16,7 +16,6 @@ struct Reponse {
     bool valid;
 }
 
-
 /**
    Cette structure représente une question spéciale Ces questions ne
    sont posé que dans la première phase. Elle ne sont pas dans la table
@@ -35,7 +34,6 @@ struct Determinant {
  */
 struct ComplexeReponse {
     string value;
-    string data;
 }
 
 struct DeterReponse {

@@ -252,6 +252,10 @@ class ICollection {
 	return res.array ();
     }
 
+    void removeDeterminant (BsonObjectID id) {
+	this._determinant.remove (["_id" : id]);    
+    }
+    
     /**
        Insert ou remplace une réponse x, de l'utilisateur u, au déterminant d
        Params: 
