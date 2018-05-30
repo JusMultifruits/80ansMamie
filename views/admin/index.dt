@@ -17,6 +17,10 @@ html
       form(action="redir_list_deter")
         div(class="row")
           input(class="form-control", type="submit", value="Liste des deters")
+
+      form(action="redir_list_user")
+        div(class="row")
+          input(class="form-control", type="submit", value="Gestion utilisateur")
           
       form(action="redir_add_question")
         div(class="row")

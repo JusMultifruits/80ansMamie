@@ -9,9 +9,9 @@
 	"reponses" : "reponse"
     },
     
-    "app" : 2,
+    "app" : 1,
     "web" : {
-	"port" : 8080,
+	"port" : 8081,
 	"ipv6" : "::",
 	"ipv4" : "0.0.0.0"
     }

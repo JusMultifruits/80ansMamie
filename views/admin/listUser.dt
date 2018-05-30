@@ -1,0 +1,59 @@
+- void css (string file)
+  link(rel='stylesheet', type='text/css', href='#{file}')
+
+html
+  head
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    - css ("bootstrap/css/bootstrap.min.css");
+    title Admin - Liste deters
+    
+  body
+    div(class="container")
+      div(class="row")
+        form(action="index", method="GET")
+          input(class="form-control", type="submit", value="Home")
+          
+      table(class="table")
+        thead
+          tr
+            th(scope="col") #
+            th(scope="col") Nom
+            th(scope="col") Identifiant
+            th(scope="col") Equipe Rouge 
+            th(scope="col") Equipe Bleue
+            th(scope="col")            
+        tbody
+        - foreach (it ; 0 .. users.length)        
+          tr
+            th(scope="row") #{it}
+            td #{users [it].nom}
+            td #{users [it].identifiant}
+            - if (users [it].equipe == 0)
+              td
+                span(class="glyphicon glyphicon-ok")
+              td 
+            - else if (users [it].equipe == 1)
+              td 
+              td 
+                span(class="glyphicon glyphicon-ok")                         
+            - else
+              td
+              td
+            - if (users [it].logged)
+              td 
+                span(class="glyphicon glyphicon-user")
+            - else
+              td 
+            td 
+              button(class="btn btn-info", onclick="editUser(\"#{users [it].identifiant}\")")
+                span(class="glyphicon glyphicon-resize-horizontal")
+
+      div(class="row")
+        form(action="calc_team", action="GET")  
+          div(class="form-group")
+            input(type="submit", class="form-control", value="calculer les équipes")
+               
+    script(src="jquery/jquery.js")
+    script(src="bootstrap/js/bootstrap.min.js")  
+    script(src="scripts/admin/listUser.js")

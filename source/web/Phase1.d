@@ -96,6 +96,11 @@ final class Phase1Controller {
     }
 
     void getLogout () {
+	if (this.session && this.session.isKeySet ("user")) {
+	    auto user = Collection.findUserById (this.session.get!Utilisateur ("user").identifiant);
+	    user.logged = false;
+	    Collection.updateUser (user);
+	}
 	response.terminateSession ();
 	render!"app1/login.dt";
     }
@@ -122,6 +127,8 @@ final class Phase1Controller {
 	void logUser (Utilisateur user) {
 	    if (request.session) response.terminateSession ();
 	    auto session = response.startSession ();
+	    user.logged = true;
+	    Collection.updateUser (user);
 	    session.set ("user", user);
 	}	
 

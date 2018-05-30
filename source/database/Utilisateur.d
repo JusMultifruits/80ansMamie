@@ -11,6 +11,8 @@ struct Utilisateur {
     string identifiant;
     short mois;
     short annee;
+    int equipe = -1;
+    bool logged = false;
     
     /**
        Returns: le nom sous forme poli ^^, jean paul -> Jean Paul

@@ -83,7 +83,7 @@ final class IApplication {
        Lance l'application
      */
     void run () {
-	runApplication ();
+	runEventLoop ();
     }    
 
     private void _errorPage (HTTPServerRequest req, HTTPServerResponse res, HTTPServerErrorInfo error) {

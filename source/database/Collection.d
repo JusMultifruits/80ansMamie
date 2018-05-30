@@ -202,6 +202,10 @@ class ICollection {
 	return user;
     }
    
+    void updateUser (Utilisateur user) {
+	this._utilisateurs.findAndModify (["_id" : user.id], user);
+    }
+
     /**
        Retourne la liste des utilisateurs ayant pour nom `nom`
        Params: 
