@@ -17,7 +17,7 @@ function connect (userId) {
     }
 
     socket.onerror = function () {
-	connect ();
+	connect (userId);
     }
     
 }
