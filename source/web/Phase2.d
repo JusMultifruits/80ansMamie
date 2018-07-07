@@ -51,6 +51,12 @@ final class GerantDuJeu {
 	this.questionDisponible = !this.questionDisponible;
     }
 
+    void sendNotif () {
+	foreach (tId, team ; this.tableauTIdEquipe)
+	    std.concurrency.send (tId, true);
+       
+    }
+
     Question getQuestionEnCours () {
 	return this.questionEnCours;
     }
@@ -73,7 +79,6 @@ void phase2WebHandler (scope WebSocket socket) {
     writeln (equipe);
     GerantDuJeu.instance.ajouter (thisTid, equipe);
     while (true) {
-	sleep (1.seconds);
 	if (!socket.connected) break;
 	/*  counter ++;
 	  socket.send (counter.to!string);
@@ -106,9 +111,7 @@ void gererInterfaceAdmin (WebSocket socket) {
 	    logInfo("team");
 	    auto question = Collection.allQuestions () [quest];
 	    GerantDuJeu.instance.fixerQuestionEtEquipe (question, team);
-	    GerantDuJeu.instance.changerEtat ();
-	    sleep (2.seconds);
-	    GerantDuJeu.instance.changerEtat ();
+	    GerantDuJeu.instance.sendNotif ();
 	}
     }
 }    
@@ -117,9 +120,9 @@ void gererInterfaceJoueur (WebSocket socket, int equipeDuJoueur) {
     bool aRepondu = false;
     bool envoye = false;
     socket.send ("NoQuest");
-    while (!GerantDuJeu.instance.getEtat ()) {
-	sleep (1.seconds);
-    }
+    receiveOnly!bool ();
+    // On a reçu un ping, on peut se mettre à jour
+    
     auto quest = GerantDuJeu.instance.getQuestionEnCours ();
     auto questionJson = quest.serializeToJson ();
 
