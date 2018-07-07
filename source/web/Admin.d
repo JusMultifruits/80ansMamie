@@ -32,7 +32,22 @@ final class AdminController {
 	auto users = Collection.allUsers ();
 	render!("admin/listUser.dt", users);
     }
-    
+
+    void getRedir_list_question () {
+	auto questions = Collection.allQuestions ();
+	render!("admin/listeQuestions.dt", questions);
+    }
+
+    void getRemove_question (int id) {
+	auto removable = Collection.allQuestions ();
+	if (id < removable.length) {
+	    auto question = removable [id];
+	    Collection.removeDeterminant (question.id);
+	}
+	auto questions = Collection.allQuestions ();
+	render!("admin/listeQuestions.dt", questions);
+    }
+
     void getRemove_deter (int id) {
 	auto removable = Collection.allDeterminants ();
 	if (id < removable.length) {
@@ -42,10 +57,43 @@ final class AdminController {
 	auto deters = Collection.allDeterminants (); 
 	render!("admin/listDeters.dt", deters);
     }
+
+    void getRedir_add_question () {
+	render!"admin/addQuestion.dt";
+    }
+
     
-    void getAdd_deter (string quest, string answers) {
+    void getAdd_question (string quest, string answers, string bonneReps) {
 	logInfo (quest);
 	logInfo (answers);
+	logInfo (bonneReps);
+
+	auto reponses = parseJSON (answers) ["reponses"].array;
+	auto quelleReponse = parseJSON (bonneReps) ["bonnesReps"].array;
+
+	bool [] reponseJuste;
+	string [] reps;
+	foreach (it; reponses) {
+	    logInfo (it.str);
+	    reps ~= [it.str];
+	}
+	
+	foreach (it; quelleReponse) {
+	       logInfo (it.str);
+	       reponseJuste ~= [it.str == "true"];
+	}
+	if (reps.length == reponseJuste.length)
+	    Collection.insertOrReplaceQuestion (quest, reps , reponseJuste);
+	else
+	    logInfo ("Erreur au niveau de la taille des tableaux Réponses / Réponses Justes");
+	
+	render!"admin/addQuestion.dt";
+    }
+
+
+    void getAdd_deter (string quest, string answers) {
+	//	logInfo (quest);
+	//	logInfo (answers);
 	auto reps = parseJSON (answers) ["ans"].array;
 	foreach (it ; reps)
 	    logInfo (it.str);
@@ -95,6 +143,17 @@ final class AdminController {
 	redirect ("/redir_list_user");
     }
 
+    void getRendre_admin (string id) {
+	auto user = Collection.findUserById (id);
+	if (!user.isNull) {
+	    user.equipe = 3;
+	    Collection.updateUser (user);
+	}
+	auto users = Collection.allUsers ();
+	render!("admin/listUser.dt", users);
+    }
+
+
     void getChange_team (string id) {
 	auto user = Collection.findUserById (id);
 	if (!user.isNull) {
@@ -141,5 +200,7 @@ final class AdminController {
 	    return teams;
 	}	
     }
+
+    
     
 }

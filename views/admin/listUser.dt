@@ -22,7 +22,9 @@ html
             th(scope="col") Identifiant
             th(scope="col") Equipe Rouge 
             th(scope="col") Equipe Bleue
+            th(scope="col") Administrateur
             th(scope="col")            
+            th(scope="col")
         tbody
         - foreach (it ; 0 .. users.length)        
           tr
@@ -33,11 +35,19 @@ html
               td
                 span(class="glyphicon glyphicon-ok")
               td 
+              td
             - else if (users [it].equipe == 1)
               td 
               td 
-                span(class="glyphicon glyphicon-ok")                         
+                span(class="glyphicon glyphicon-ok")  
+              td
+            - else if (users [it].equipe == 3)
+              td
+              td
+              td
+                span(class="glyphicon glyphicon-ok")
             - else
+              td
               td
               td
             - if (users [it].logged)
@@ -48,6 +58,9 @@ html
             td 
               button(class="btn btn-info", onclick="editUser(\"#{users [it].identifiant}\")")
                 span(class="glyphicon glyphicon-resize-horizontal")
+            td
+              button(class="btn btn-info", onclick="rendreAdmin(\"#{users [it].identifiant}\")") Administrateur
+                
 
       div(class="row")
         form(action="calc_team", action="GET")  

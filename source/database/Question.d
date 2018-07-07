@@ -8,7 +8,7 @@ import vibe.d;
 struct Question {
     @name ("_id") BsonObjectID id; // le champs sera nommé '_id' dans la base 
     string texte;
-    Reponse [] reponses;    
+    Reponse [] reponses;
 }
 
 struct Reponse {

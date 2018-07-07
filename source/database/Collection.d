@@ -120,7 +120,7 @@ class ICollection {
        - reponse, le texte des réponses possibles
        - valide, un tableau où valide [i] est vrai ssi reponse [i] est une bonne réponse
      */
-    void updateQuestionById (BsonObjectID id, string texte, string [] reponse, bool [] valide) {
+    void updateQuestionById (BsonObjectID id, string texte, string [] reponse, bool [] valide, bool enCours) {
 	Nullable!Question res = this._questions.findOne!Question (["_id" : id]);
 	Question q = Question (id, texte, []);
 	

@@ -1,0 +1,35 @@
+- void css (string file)
+  link(rel='stylesheet', type='text/css', href='#{file}')
+  
+html
+  head
+    script(src="jquery/jquery.js")
+    script(src="bootstrap/js/bootstrap.min.js")
+    script(src="/scripts/admin/addQuestion.js")
+    
+    meta(charset="utf-8")
+    meta(name="viewport", content="widtg=device-width, initial-scale=1, shrink-to-fit=no")
+    - css ("bootstrap/css/bootstrap.min.css");
+    
+    title Insert Question
+
+  body
+    div(class="container")
+      div(class="row")
+        form(action="index", methode="GET")
+          input(class="form-control", type="submit", value="Home")
+          
+      div(class="row")
+        div(class="form-group")
+          label(for="id") Question :
+          input#id(class="form-control", type="text", name="quest", required="true")
+          
+      div(class="row")
+        p(for="rep") Réponse :
+        div#multi(class="form-group")
+        
+      div(class="row")
+        button(type="submit", class="btn btn-info", onclick="addRep()")
+          span(class="glyphicon") &#x2b;
+        button(type="submit", class="btn btn-success", onclick="sendServer ()")
+          p Ajouter la question

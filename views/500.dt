@@ -26,6 +26,6 @@ html
         h3 ou alors 
         form(action="/begin", method="GET")
           div(class="form-group")
-            label(for="home") Appuie ici pour retourner à l'acceuil : 
+            label(for="home") Appuie ici pour retourner à l'accueil : 
             input#home(class="form-control", type="submit", value="Retourner sur le droit chemin")
     
