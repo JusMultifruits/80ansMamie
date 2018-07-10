@@ -21,7 +21,7 @@ final class GerantDuJeu {
     private Question questionEnCours;
     private bool questionDisponible;
     private int equipeVisee;
-    private int[][2] reponses; // 2 tableaux de [] cases
+    private int[string][2] reponses; // 2 tableaux de [] cases
 
     this () {
 	this.questionDisponible = false;
@@ -51,15 +51,15 @@ final class GerantDuJeu {
     void fixerQuestionEnCours (Question question) {
 	this.questionEnCours = question;
 	writeln ("Question fixée");
-	int i = 0;
-	foreach (rep; this.questionEnCours.reponses)
-	    i++;
-	writeln ("nb réponses", i);
-	this.reponses [0] = new int[i];
-	this.reponses [1] = new int[i];
-	for (int j = 0; j < this.reponses.length ; j++)
-	    for (int k = 0; k < this.reponses[].length; k++)
-		this.reponses[j][k] = 0;
+	int i = cast (int) this.questionEnCours.reponses.length;
+	// foreach (rep; this.questionEnCours.reponses)
+	//     i++;
+	writeln ("nb réponses", i);	
+	this.reponses [0] = null; //new int[string];
+	this.reponses [1] = null; //new int[string];
+	// for (int j = 0; j < this.reponses.length ; j++)
+	//     for (int k = 0; k < this.reponses[].length; k++)
+	// 	this.reponses[j][k] = 0;
     }
 
     void changerEtat () {
@@ -76,17 +76,28 @@ final class GerantDuJeu {
 	return this.questionEnCours;
     }
 
-    void traiterReponses (long nbRep, long equipe) {
-	writeln ("numero Rép", nbRep, " equipe ", equipe);
+    void traiterReponses (long nbRep, string identifiant, long equipe) {
+	writeln ("numero Rép : ", nbRep, ", equipe  :", equipe);
+	this.reponses[equipe][identifiant] = cast (int) nbRep;
 	writeln ("tableau : ", this.reponses);
-	this.reponses[equipe][nbRep] ++;
 	foreach (tId, team; this.tableauTIdEquipe)
 	    if (team == 4)
 		std.concurrency.send (tId, true);
     }
 
-    int[][2] recupererReponses () {
+    int[string][2] recupererReponses () {
 	return this.reponses;
+    }
+
+    int[][2] compteReponse () {
+	int[][2] reps;
+	foreach (team ; 0 .. 2) {
+	    reps [team] = new int [this.questionEnCours.reponses.length];
+	    foreach (string id, nbRep ; this.reponses [team]) {
+		reps [team][nbRep] ++;
+	    }
+	}
+	return reps;
     }
 
     void fixerQuestionEtEquipe (Question quest, int team) {
@@ -121,13 +132,12 @@ void phase2WebHandler (scope WebSocket socket) {
 void gererInterfaceResultats (WebSocket socket) {
     receiveOnly!bool ();
 
-    auto reponses = GerantDuJeu.instance.recupererReponses ();
+    auto reponses = GerantDuJeu.instance.compteReponse ();
     auto question = GerantDuJeu.instance.getQuestionEnCours ();
     auto equipeCiblee = GerantDuJeu.instance.getEquipeVisee ();
     QuestEtRep contenu = {question, reponses, equipeCiblee};
     
     socket.send (contenu.serializeToJson ().toString ());
-
 }
 
 void gererInterfaceAdmin (WebSocket socket) {
@@ -153,20 +163,21 @@ void gererInterfaceAdmin (WebSocket socket) {
 void gererInterfaceJoueur (WebSocket socket, int equipeDuJoueur) {
     bool aRepondu = false;
     bool envoye = false;
-    socket.send ("NoQuest");
+    //socket.send ("NoQuest");
     receiveOnly!bool ();
     // On a reçu un ping, on peut se mettre à jour
-    
+    writeln ("ici");
     auto quest = GerantDuJeu.instance.getQuestionEnCours ();
     auto questionJson = quest.serializeToJson ();
 
     if ((GerantDuJeu.instance.getEquipeVisee () == equipeDuJoueur) || (GerantDuJeu.instance.getEquipeVisee () == 2)) {
-	socket.send (questionJson.toString ());
-        auto rep = socket.receiveText;
+	if (socket.connected)
+	    socket.send (questionJson.toString ());
+        /*auto rep = socket.receiveText;
 	long reponse = parseJSON(rep)["rep"].integer;
 	long equipe = parseJSON(rep)["equipe"].integer;
     
-	GerantDuJeu.instance.traiterReponses (reponse, equipe);
+	GerantDuJeu.instance.traiterReponses (reponse, equipe);*/
     } 
 }
 
@@ -223,7 +234,7 @@ final class Phase2Controller {
 	response.terminateSession ();
 	render!"app2/login.dt";
     }
-
+    
     // void getEnvoyer_question (int id) {
     // 	if (!this.session || !this.session.isKeySet ("user"))
     // 	    render!"app2/login.dt";
@@ -242,13 +253,13 @@ final class Phase2Controller {
     // }
 
     void getReponse_quest_en_cours (int i) {
-	writeln("getReponseQuestEnCours");
+	logInfo ("getReponseQuestEnCours");
 	if (!this.session || ! this.session.isKeySet ("user"))
 	    render!"app2/login.dt";
 	else {
 	    auto login = this.session.get!Utilisateur ("user");
-	    writeln ("Appel de traiterReponses ()");
-	    GerantDuJeu.instance.traiterReponses (i, login.equipe);
+	    logInfo ("Appel de traiterReponses ()");
+	    GerantDuJeu.instance.traiterReponses (i, login.identifiant, login.equipe);
 	    render!("app2/pagePrincipale.dt", login);
 	}
     }

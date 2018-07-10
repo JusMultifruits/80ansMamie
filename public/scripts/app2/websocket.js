@@ -9,7 +9,8 @@ function connect(equipe)
 	setText("connected. waiting for timer...");
 	socket.send(equipe);
     }
-    socket.onmessage = function(message, equipe) {	
+    socket.onmessage = function(message) {
+	console.log (message + " " + equipe);
 	ecrireContenu (message.data, equipe);
     }
     socket.onclose = function() {
@@ -94,9 +95,10 @@ function writeQuestion (message) {
     if (message == "NoQuest") {
 	document.getElementById ("contenu").innerHTML = "Veuillez patienter";
     } else {
-	var question = JSON.parse (message);
+	var question = JSON.parse (message);	
 	console.log (question.texte);
 	document.getElementById ("Question").innerHTML = question.texte;
+	console.log ("la");
 	$("#contenu").append ('<div id="Reponses" class="row form-group product-chooser"></div>');
 	for (var i = 0; i < question.reponses.length; i ++)  {
 	    writeNewAnswer (question.reponses [i], i);
@@ -130,10 +132,17 @@ function writeNewAnswer (answer, i) {
 }
 
 function sendServer (i) {
+    /*
     var message = '{"rep" : '+i+',"equipe":'+_equipe+'}';
     console.log("avant envoi");
     socket.send (message);
     console.log("après envoi");
+    */
+
+    var xhttp = new XMLHttpRequest ();
+    xhttp.open ("GET", "reponse_quest_en_cours?i=" + i, true);
+    xhttp.send ();
+    
 }
 
 function tracerGraphique (message) {
