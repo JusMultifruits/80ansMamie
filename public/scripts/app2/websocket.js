@@ -39,15 +39,25 @@ function getBaseURL()
 }
 
 function ecrireContenu (message, equipe) {
-    if (_equipe == 3) {
-    	ecrireListeQuestionsAdmin (message);
-    } else {
-    	writeQuestion (message);
+    console.log(_equipe);
+    switch(_equipe) {
+    case '3' :
+ 	console.log("case3");
+	ecrireListeQuestionsAdmin (message);
+	break;
+    case '4': 
+	console.log("case4");
+	tracerGraphique (message);
+	break;
+    default:
+	console.log("default"); 
+	writeQuestion (message);
+	break;
     }
 }
 
 function ecrireListeQuestionsAdmin (message) {
-    document.getElementById ("Question").innerHTML = "";
+    document.getElementById ("Question").innerHTML = '<form action="resultats" method="get"><input class="form-control btn-info" type="submit" value="Resultats"></form>';
     document.getElementById ("contenu").innerHTML = "";
     var listeQuestions = JSON.parse (message);
     var i = 0;
@@ -124,4 +134,81 @@ function sendServer (i) {
     console.log("avant envoi");
     socket.send (message);
     console.log("après envoi");
+}
+
+function tracerGraphique (message) {
+    var question = JSON.parse (message)["question"];
+    var reponses = JSON.parse (message)["reponses"];
+    var equipeCiblee = JSON.parse (message)["equipeCiblee"];
+    
+    console.log (question);
+    console.log ("MaJ");
+    console.log (reponses);
+    console.log (reponses[0]);
+    console.log (equipeCiblee);
+
+    var graph = document.getElementById ("myChart");
+    var chart = new Chart (graph, {
+    	type : 'bar',
+    	data : {
+	    labels: [1,2,3,4],
+	    datasets: [{
+		label: 'Nombre de votes',
+		data: reponses[0]}
+		      ]},		      
+    	options: {
+    	    scales: {
+    		yAxes: [{
+    		    ticks : {
+    			beginAtZero:true
+    		    }
+    		}]
+    		}
+    	    }
+	});
+
+    // var chart = new Chart(graph, {
+    // 	type: 'bar',
+    // 	data: {
+    //         labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+    //         datasets: [{
+    // 		label: '# of Votes',
+    // 		data: [12, 19, 3, 5, 2, 3],
+    // 		backgroundColor: [
+    //                 'rgba(255, 99, 132, 0.2)',
+    //                 'rgba(54, 162, 235, 0.2)',
+    //                 'rgba(255, 206, 86, 0.2)',
+    //                 'rgba(75, 192, 192, 0.2)',
+    //                 'rgba(153, 102, 255, 0.2)',
+    //                 'rgba(255, 159, 64, 0.2)'
+    // 		],
+    // 		borderColor: [
+    //                 'rgba(255,99,132,1)',
+    //                 'rgba(54, 162, 235, 1)',
+    //                 'rgba(255, 206, 86, 1)',
+    //                 'rgba(75, 192, 192, 1)',
+    //                 'rgba(153, 102, 255, 1)',
+    //                 'rgba(255, 159, 64, 1)'
+    // 		],
+    // 		borderWidth: 1
+    //         }]
+    // 	},
+    // 	options: {
+    //         scales: {
+    // 		yAxes: [{
+    //                 ticks: {
+    // 			beginAtZero:true
+    //                 }
+    // 		}]
+    //         }
+    // 	}
+    // });
+}
+
+function creerLabels (reponses) {
+    
+}
+
+function traitementDesDonnees (reponses) {
+    return reponses [0];
 }

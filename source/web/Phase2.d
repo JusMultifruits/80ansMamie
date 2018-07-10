@@ -9,13 +9,20 @@ import std.concurrency;
 import std.stdio;
 import std.json;
 
+struct QuestEtRep {
+    Question question;
+    int[][2] reponses;
+    int equipeCiblee;
+}
+
 final class GerantDuJeu {
     mixin ThreadSafeSingleton;
     private int[Tid] tableauTIdEquipe;
     private Question questionEnCours;
     private bool questionDisponible;
     private int equipeVisee;
-    
+    private int[][2] reponses; // 2 tableaux de [] cases
+
     this () {
 	this.questionDisponible = false;
 	this.equipeVisee = 2;
@@ -44,7 +51,15 @@ final class GerantDuJeu {
     void fixerQuestionEnCours (Question question) {
 	this.questionEnCours = question;
 	writeln ("Question fixée");
-	writeln (this.questionEnCours);
+	int i = 0;
+	foreach (rep; this.questionEnCours.reponses)
+	    i++;
+	writeln ("nb réponses", i);
+	this.reponses [0] = new int[i];
+	this.reponses [1] = new int[i];
+	for (int j = 0; j < this.reponses.length ; j++)
+	    for (int k = 0; k < this.reponses[].length; k++)
+		this.reponses[j][k] = 0;
     }
 
     void changerEtat () {
@@ -62,7 +77,16 @@ final class GerantDuJeu {
     }
 
     void traiterReponses (long nbRep, long equipe) {
-	writeln (nbRep, " ", equipe);
+	writeln ("numero Rép", nbRep, " equipe ", equipe);
+	writeln ("tableau : ", this.reponses);
+	this.reponses[equipe][nbRep] ++;
+	foreach (tId, team; this.tableauTIdEquipe)
+	    if (team == 4)
+		std.concurrency.send (tId, true);
+    }
+
+    int[][2] recupererReponses () {
+	return this.reponses;
     }
 
     void fixerQuestionEtEquipe (Question quest, int team) {
@@ -76,21 +100,34 @@ void phase2WebHandler (scope WebSocket socket) {
     int counter = 0;
     logInfo ("Got new web connection");
     int equipe = socket.receiveText.to!int;
-    writeln (equipe);
     GerantDuJeu.instance.ajouter (thisTid, equipe);
     while (true) {
 	if (!socket.connected) break;
 	/*  counter ++;
 	  socket.send (counter.to!string);
 	*/
-	if (equipe == 3) {
-	    gererInterfaceAdmin (socket); // On décompose
-	} else {
-	    gererInterfaceJoueur (socket, equipe);
+	switch (equipe) {
+	case 3 : gererInterfaceAdmin (socket);
+	    break;
+	case 4 : gererInterfaceResultats (socket);
+	    break;
+	default : gererInterfaceJoueur (socket, equipe);
 	}
     }
     logInfo ("Client is out");
     GerantDuJeu.instance.supprimer (thisTid);  
+}
+
+void gererInterfaceResultats (WebSocket socket) {
+    receiveOnly!bool ();
+
+    auto reponses = GerantDuJeu.instance.recupererReponses ();
+    auto question = GerantDuJeu.instance.getQuestionEnCours ();
+    auto equipeCiblee = GerantDuJeu.instance.getEquipeVisee ();
+    QuestEtRep contenu = {question, reponses, equipeCiblee};
+    
+    socket.send (contenu.serializeToJson ().toString ());
+
 }
 
 void gererInterfaceAdmin (WebSocket socket) {
@@ -104,11 +141,8 @@ void gererInterfaceAdmin (WebSocket socket) {
 	if (msg == "Fin")
 	    fini = true;
 	else {
-	    logInfo ("avant quest");
 	    int quest = parseJSON(msg)["quest"].integer.to!int;
-	    logInfo ("quest");
 	    int team = parseJSON(msg)["team"].integer.to!int;
-	    logInfo("team");
 	    auto question = Collection.allQuestions () [quest];
 	    GerantDuJeu.instance.fixerQuestionEtEquipe (question, team);
 	    GerantDuJeu.instance.sendNotif ();
@@ -217,6 +251,13 @@ final class Phase2Controller {
 	    GerantDuJeu.instance.traiterReponses (i, login.equipe);
 	    render!("app2/pagePrincipale.dt", login);
 	}
+    }
+
+    void getResultats () {
+	if (!this.session || !this.session.isKeySet ("user"))
+	    render!"app2/login.dt";
+	else
+	    render!"app2/affichageResultats.dt";
     }
 
     private {
