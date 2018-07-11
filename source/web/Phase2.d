@@ -22,6 +22,7 @@ final class GerantDuJeu {
     private bool questionDisponible;
     private int equipeVisee;
     private int[string][2] reponses; // 2 tableaux de [] cases
+    private int[][2] faussesReponses;
 
     this () {
 	this.questionDisponible = false;
@@ -46,6 +47,14 @@ final class GerantDuJeu {
 
     int getEquipeVisee () {
 	return this.equipeVisee;
+    }
+
+    void creerFauxVotes (int[] fauxVotesRouges, int[] fauxVotesBleus) {
+	this.faussesReponses[0] = fauxVotesRouges;
+	this.faussesReponses[1] = fauxVotesBleus;
+	foreach (tId, team; this.tableauTIdEquipe)
+	    if (team == 4)
+		std.concurrency.send (tId, true);
     }
 
     void fixerQuestionEnCours (Question question) {
@@ -94,15 +103,23 @@ final class GerantDuJeu {
 	foreach (team ; 0 .. 2) {
 	    reps [team] = new int [this.questionEnCours.reponses.length];
 	    foreach (string id, nbRep ; this.reponses [team]) {
+		writeln ("id : ", id, " nbRep : ", nbRep, " this.reponses[team]: ", this.reponses[team]);
 		reps [team][nbRep] ++;
+		writeln ("reps: ", reps);
 	    }
 	}
+	for (int i = 0; i<reps[1].length; i++)
+	    for (int j = 0; j<reps.length; j++) {
+		reps[j][i] += faussesReponses[j][i];
+		writeln( "reps[",j,"][",i,"]:",reps[j][i],"  fausseRep:",faussesReponses[j][i]);
+	    }
 	return reps;
     }
 
     void fixerQuestionEtEquipe (Question quest, int team) {
 	this.fixerQuestionEnCours (quest);
 	this.equipeVisee = team;
+	this.faussesReponses = new int[quest.reponses.length];
     }
 }
 
@@ -224,6 +241,30 @@ final class Phase2Controller {
 	}
     }
 
+    void getFaux_votes (string fake) {
+    	if (!this.session || !this.session.isKeySet ("user")) {
+    		render!"app2/login.dt";
+    	} else {
+	    //GerantDuJeu.instance.creerFauxVotes (faussesRep);
+	    auto faussesRepBleues = parseJSON(fake)["faussesRepBleue"].array;
+	    auto faussesRepRouges = parseJSON(fake)["faussesRepRouge"].array;
+
+	    int[] fauxBleus;
+	    int[] fauxRouges;
+	    foreach (it; faussesRepBleues)
+		fauxBleus ~= [it.integer.to!int];
+
+	    foreach (it; faussesRepRouges)
+		fauxRouges ~= [it.integer.to!int];
+
+	    writeln(fauxRouges);
+	    GerantDuJeu.instance.creerFauxVotes (fauxRouges, fauxBleus);
+
+	    auto login = this.session.get!Utilisateur("user");
+	    render!("app2/pagePrincipale.dt",login);
+    	}
+    }
+    
 
     void getLogout () {
 	if (this.session && this.session.isKeySet ("user")) {

@@ -26,4 +26,4 @@ html
           div(class="row")
             ul
             - foreach (value; questions [it].reponses)
-              li #{value.texte} : #{value.valid}
+              li #{value.texte} : #{value.valid} - #{value.equipe}

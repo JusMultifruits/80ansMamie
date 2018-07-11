@@ -63,7 +63,7 @@ class ICollection {
        - reponse, le texte des réponses possibles
        - valide, un tableau où valide [i] est vrai ssi reponse [i] est une bonne réponse
      */    
-    void insertOrReplaceQuestion (string texte, string [] reponse, bool [] valide) {
+    void insertOrReplaceQuestion (string texte, string [] reponse, bool [] valide, int [] equipe) {
 	Question q = Question (
 	    BsonObjectID.generate (),
 	    texte, []
@@ -73,7 +73,8 @@ class ICollection {
 	foreach (it ; 0 .. reponse.length) {
 	    reps [it] = Reponse (
 		reponse [it],
-		valide [it]
+		valide [it],
+		equipe [it]
 	    );
 	}
 	
@@ -94,7 +95,7 @@ class ICollection {
        - reponse, le texte des réponses possibles
        - valide, un tableau où valide [i] est vrai ssi reponse [i] est une bonne réponse
      */
-    void updateQuestion (string texte, string [] reponse, bool [] valide) {
+    void updateQuestion (string texte, string [] reponse, bool [] valide, int [] equipe) {
 	Nullable!Question res = this._questions.findOne!Question (["texte" : texte]);
 	Question q;
 	if (!res.isNull) q = Question (res.id, texte, []);
@@ -104,7 +105,8 @@ class ICollection {
 	foreach (it ; 0 .. reponse.length) {
 	    reps [it] = Reponse (
 		reponse [it],
-		valide [it]
+		valide [it],
+		equipe [it]
 	    );
 	}
 
@@ -120,7 +122,7 @@ class ICollection {
        - reponse, le texte des réponses possibles
        - valide, un tableau où valide [i] est vrai ssi reponse [i] est une bonne réponse
      */
-    void updateQuestionById (BsonObjectID id, string texte, string [] reponse, bool [] valide, bool enCours) {
+    void updateQuestionById (BsonObjectID id, string texte, string [] reponse, bool [] valide, int [] equipe) {
 	Nullable!Question res = this._questions.findOne!Question (["_id" : id]);
 	Question q = Question (id, texte, []);
 	
@@ -128,7 +130,8 @@ class ICollection {
 	foreach (it ; 0 .. reponse.length) {
 	    reps [it] = Reponse (
 		reponse [it],
-		valide [it]
+		valide [it],
+		equipe [it]
 	    );
 	}
 	

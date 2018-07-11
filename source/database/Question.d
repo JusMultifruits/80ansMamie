@@ -14,6 +14,7 @@ struct Question {
 struct Reponse {
     string texte;
     bool valid;
+    int equipe;
 }
 
 /**

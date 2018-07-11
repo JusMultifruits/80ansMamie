@@ -1,10 +1,15 @@
-var socket;
+
 var _equipe;
 var questionEnCours;
-
+var dataSet;
 
 function connect(equipe)
 {
+    if (equipe == '4') {
+	dataSet = [];
+	chargerGraphique ("");
+    }
+    
     setText("connecting...");
     socket = new WebSocket(getBaseURL() + "/ws");
     _equipe = equipe;
@@ -61,7 +66,22 @@ function ecrireContenu (message, equipe) {
 }
 
 function ecrireListeQuestionsAdmin (message) {
-    document.getElementById ("Question").innerHTML = '<form action="resultats" method="get"><input class="form-control btn-info" type="submit" value="Resultats"></form>';
+    document.getElementById ("Question").innerHTML = '<div class="container>\
+<div class="row">\
+<form action="resultats" class="col-md" method="get">\
+<input class="form-control btn-info" type="submit" value="Resultats"></form>\
+<div class="row">\
+<label for="fausseRep10">Rep1 Rouge</label><input type="text" name="rep10" value="0" id="fausseRep10">\
+<label for="fausseRep20">Rep2 Rouge</label><input type="text" name="rep20" value="0" id="fausseRep20">\
+<label for="fausseRep30">Rep3 Rouge</label><input type="text" name="rep30" value="0" id="fausseRep30">\
+<label for="fausseRep40">Rep4 Rouge</label><input type="text" name="rep40" value="0" id="fausseRep40">\
+</div>\
+<div class="row">\
+<label for="fausseRep11">Rep1 Bleue</label><input type="text" name="rep11" value="0" id="fausseRep11">\
+<label for="fausseRep21">Rep2 Bleue</label><input type="text" name="rep21" value="0" id="fausseRep21">\
+<label for="fausseRep31">Rep3 Bleue</label><input type="text" name="rep31" value="0" id="fausseRep31">\
+<label for="fausseRep41">Rep4 Bleue</label><input type="text" name="rep41" value="0" id="fausseRep41"></div>\
+<button type="submit" class="btn btn-danger" onclick="envoyerFaussesReponses()">Envoyer les fausses réponses </button></div></div>';
     document.getElementById ("contenu").innerHTML = "";
     var listeQuestions = JSON.parse (message);
     var i = 0;
@@ -70,11 +90,35 @@ function ecrireListeQuestionsAdmin (message) {
     for (quest of listeQuestions) {
 	$("#contenu").append('<div class="row"> <h2> ',quest.texte,'  </h2>  <button class="btn btn-success" onclick="envoyerQuestion('+i+')"><span class="glyphicon glyphicon-envelope"></span></button><div class="row"><ul>');
 	for (rep of quest.reponses) {
-	    $("#contenu").append('<li> '+rep.texte+' : '+rep.valid+' </li>');
+	    $("#contenu").append('<li> '+rep.texte+' : '+rep.valid+' - '+rep.equipe+'</li>');
 	}
 	$("#contenu").append('</ul></div>');
 	i++;
     }
+}
+
+function envoyerFaussesReponses () {
+    var faussesRepRouge = [];
+    var faussesRepBleue = [];
+    faussesRepRouge.push (document.getElementById('fausseRep10').value);
+    faussesRepRouge.push (document.getElementById('fausseRep20').value);
+    faussesRepRouge.push (document.getElementById('fausseRep30').value);
+    faussesRepRouge.push (document.getElementById('fausseRep40').value);
+    console.log(faussesRepRouge);
+
+    faussesRepBleue.push (document.getElementById('fausseRep11').value);
+    faussesRepBleue.push (document.getElementById('fausseRep21').value);
+    faussesRepBleue.push (document.getElementById('fausseRep31').value);
+    faussesRepBleue.push (document.getElementById('fausseRep41').value);
+    console.log(faussesRepBleue);
+    
+    var faussesRepJson = '{"faussesRepRouge" : ['+faussesRepRouge+'],"faussesRepBleue":['+faussesRepBleue+']}';
+    console.log(faussesRepJson);
+    var xhttp = new XMLHttpRequest ();
+    console.log("faux_votes?fake="+faussesRepJson);
+
+    xhttp.open ("GET", "faux_votes?fake="+faussesRepJson,true);
+    xhttp.send ();
 }
 
 function envoyerQuestion (i) {
@@ -119,7 +163,8 @@ function reloadRadios () {
 }
 
 function writeNewAnswer (answer, i) {
-    $("#Reponses").append ('<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> \
+    if((answer.equipe == _equipe) || (answer.equipe == 2))
+	$("#Reponses").append ('<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"> \
                               <div class="product-chooser-item" onclick="sendServer (' + i + ')"> \
                                   <div class="col-12"> \
                                       <div class="card col-12 text-center"> \
@@ -152,56 +197,135 @@ function tracerGraphique (message) {
     var question = JSON.parse (message)["question"];
     var reponses = JSON.parse (message)["reponses"];
     var equipeCiblee = JSON.parse (message)["equipeCiblee"];
-    
-    // console.log (question);
-    // console.log ("MaJ");
-    // console.log (reponses);
-    // console.log (reponses[0]);
-    // console.log (equipeCiblee);
+    console.log (question);
+    var graph = document.getElementById ("myChart").getContext ('2d');
+  //   // console.log ("MaJ");
+//     console.log (reponses);
+//     // console.log (reponses[0]);
+//     // console.log (equipeCiblee);
+//     console.log("questions.reponses :" , question.reponses);
+// //    if (!(question == questionEnCours)) {
+// //	makeLabels (question.reponses);
+//     chargerGraphique (question.texte, question, reponses, equipeCiblee);
+// 	questionEnCours = question;
+// 	console.log ("question modifiée");
+//   //  }
+//     dataSet.datasets = creerDataSet (reponses, equipeCiblee);
+    //     //  window.chart.update ();
 
-    if (!(question == questionEnCours)) {
-	var graph = document.getElementById ("myChart");
-	var chart = new Chart (graph, {
-    	    type : 'bar',
-    	    data : traitementDesDonnees (reponses, equipeCiblee),
-    	    options: {
-    		scales: {
-    		    yAxes: [{
-    			ticks : {
-    			    beginAtZero:true
-    			}
-    		    }]
-    		}
-    	    }
-	});
-    }
+    window.chart = new Chart (graph, {
+    	type : 'bar',
+    	data : {labels :makeLabels (question.reponses),
+		datasets : creerDataSet (reponses, equipeCiblee)	    
+	       },//dataSet,
+    	options: {
+	    responsive: true,
+    	    scales: {
+    		yAxes: [{
+    		    ticks : {
+    			beginAtZero:true
+    		    }
+    		}]
+    	    },
+	    title: {
+		display: true,
+		text: question.texte
+	    },
+	    animation : {
+		duration : 0
+	    }
+	}
+	    //	}// ,
+	    //  defaults : {
+	    //      global : {
+	    // 	  animation : {
+	    // 	      duration : 0
+	    // 	  }
+	    //      }
+	    //  }
+	    
+    });
 }
 
-function creerLabels (reponses) {
-    
+function chargerGraphique (titre, question, reponses, equipeCiblee) {
+    var graph = document.getElementById ("myChart").getContext ('2d');
+    // window.chart = new Chart (graph, {
+    // 	type : 'bar',
+    // 	data : {labels :makeLabels (question.reponses),
+    // 		datasets : creerDataSet (reponses, equipeCiblee)	    
+    // 	       },//dataSet,
+    // 	options: {
+    // 	    responsive: true,
+    // 	    scales: {
+    // 		yAxes: [{
+    // 		    ticks : {
+    // 			beginAtZero:true
+    // 		    }
+    // 		}]
+    // 	    },
+    // 	    title: {
+    // 		display: true,
+    // 		text: titre
+    // 	    }
+    // 	}
+    // });
 }
 
-function traitementDesDonnees (reponses, equipeCiblee) {
-    var donneesAAfficher = {labels :[], datasets :[]}
-    donneesAAfficher.labels.length = reponses[0].length;
+function makeLabels (reponsesTexte) {
+    var labels = [];
+    console.log ("reponsesTexte.length : ", reponsesTexte.length);
+    for (var i = 0; i < reponsesTexte.length; i++ )
+	labels[i] = reponsesTexte[i].texte;
+    return labels;
+  //  dataSet.labels = labels;
+}
 
-    for (var i = 0; i < donneesAAfficher.labels.length; i++ )
-	donneesAAfficher.labels[i] = "Réponse "+(i+1);
+function traitementDesDonnees (reponsesDonnees, equipeCiblee, reponsesTexte) {
+ 
+    donneesAAfficher.datasets = creerDataSet (reponsesDonnees, equipeCiblee);
+    
+    return donneesAAfficher;
+}
 
+function creerDataSet (reponses, equipeCiblee) {
+    console.log ("creerDataSet",reponses.length);
+    var color = Chart.helpers.color;
     switch(equipeCiblee) {
-    case 0: donneesAAfficher.datasets = creerDataSet (reponses[0], equipeCiblee);
+    case 2:console.log ("double team");
+	console.log("reponses",reponses);
+	var dataset = [{
+	    label:'Equipe Rouge',
+	    backgroundColor: 'rgba(255,0,0,0.35)',
+	    borderColor:'rgba(255,0,0,0.8)',
+	    borderWidth: 1,
+	    data : reponses[0]
+	},{
+	    label:'Equipe Bleue',
+	    backgroundColor : 'rgba(0,0,255,0.35)',//blue, // color (window.chartColors.blue).alpha(0.8).rgbString(),
+	    borderColor: 'rgba (0,0,255,0.8)',//window.chartColors.blue,
+	    borderWidth: 1,
+	    data : reponses[1] }];
 	break;
-    case 1: donneesAAfficher.datasets = creerDataSet (reponses[1], equipeCiblee);
+    case 0: console.log ("team rouge");
+	console.log("reponses, ",reponses[0]);
+	var dataset = [{
+	    label:'Equipe Rouge',
+	    backgroundColor: 'rgba(255,0,0,0.35)',//color(window.chartColors.red).alpha(0.8).rgbString(),
+	    borderColor: 'rgba(255,0,0,0.8)',//window.chartColors.red,
+	    borderWidth: 1,
+	    data: reponses[0]
+	}];
 	break;
-    case  2: donneesAAfficher.datasets = creerDataSet (reponses, equipeCiblee);
-	break;
-    default: console.log ("erreur d'équipe visée");
+    case 1: console.log("team bleue");
+	console.log ("reponses, ",reponses[1]);
+	var dataset = [{
+	    label:'Equipe Bleue',
+	    backgroundColor: 'rgba(0,0,255,0.35)',//color(window.chartColors.blue).alpha(0.8).rgbString(),
+	    borderColor: 'rgba(0,0,255,0.8)',//window.chartColors.blue,
+	    borderWidth:1,
+	    data: reponses[1]
+	}];
 	break;
     }
-   
+    return dataset;
 }
-
-function creerDataSet (donnees, team) {
-    
-}
-

@@ -63,16 +63,18 @@ final class AdminController {
     }
 
     
-    void getAdd_question (string quest, string answers, string bonneReps) {
-	logInfo (quest);
-	logInfo (answers);
-	logInfo (bonneReps);
+    void getAdd_question (string quest, string answers, string bonneReps, string equipe) {
+	// logInfo (quest);
+	// logInfo (answers);
+	// logInfo (bonneReps);
 
 	auto reponses = parseJSON (answers) ["reponses"].array;
 	auto quelleReponse = parseJSON (bonneReps) ["bonnesReps"].array;
-
+	auto quelleEquipe = parseJSON (equipe) ["equipe"].array;
+	logInfo (equipe);
 	bool [] reponseJuste;
 	string [] reps;
+	int [] tabEquipe;
 	foreach (it; reponses) {
 	    logInfo (it.str);
 	    reps ~= [it.str];
@@ -82,8 +84,20 @@ final class AdminController {
 	       logInfo (it.str);
 	       reponseJuste ~= [it.str == "true"];
 	}
+
+	foreach (it; quelleEquipe) {
+	    logInfo (it.str);
+	    switch (it.str) {
+	    case "0": tabEquipe ~= [0];
+		break;
+	    case "1": tabEquipe ~= [1];
+		break;
+	    default: tabEquipe ~= [2];
+	    }
+	}
+	
 	if (reps.length == reponseJuste.length)
-	    Collection.insertOrReplaceQuestion (quest, reps , reponseJuste);
+	    Collection.insertOrReplaceQuestion (quest, reps , reponseJuste, tabEquipe);
 	else
 	    logInfo ("Erreur au niveau de la taille des tableaux Réponses / Réponses Justes");
 	
