@@ -1,6 +1,6 @@
 
 var _equipe;
-var questionEnCours;
+var questionEnCoursTexte = ""; 
 var dataSet;
 
 function connect(equipe)
@@ -71,7 +71,7 @@ function ecrireContenu (message, equipe) {
 }
 
 function ecrireListeQuestionsAdmin (message) {
-    document.getElementById ("Question").innerHTML = '<div class="container>\
+    document.getElementById ("contenu").innerHTML = '<div class="container>\
 <div class="row">\
 <form action="resultats" class="col-md" method="get">\
 <input class="form-control btn-info" type="submit" value="Resultats"></form>\
@@ -99,8 +99,9 @@ function ecrireListeQuestionsAdmin (message) {
 \
 <label for="score_rouge">Score rouge</label><input type="text" name="score_rouge" value="0" id="score_rouge">\
 <label for="score_bleue">Score bleue</label><input type="text" name="score_bleue" value="0" id="score_bleue">\
-<button type="submit" class="btn btn-danger" onclick="envoyerScore()">Envoyer les scores </button>\</div>';
-    document.getElementById ("contenu").innerHTML = "";
+<button type="submit" class="btn btn-danger" onclick="envoyerScore()">Envoyer les scores </button>\
+<button type="submit" class="btn btn-danger" onclick="envoyerQuestionVide()">Envoyer question vide</button></div>';
+    document.getElementById ("Question").innerHTML = "";
     var listeQuestions = JSON.parse (message);
     var i = 0;
     $("#contenu").append ('<div class="row"><button type="button" class="btn btn-danger" onclick="sortirDuJeu()"> Sortir de la boucle Admin </button></div>');
@@ -113,6 +114,10 @@ function ecrireListeQuestionsAdmin (message) {
 	$("#contenu").append('</ul></div>');
 	i++;
     }
+}
+
+function envoyerQuestionVide () {
+    socket.send ("vide");
 }
 
 function envoyerScore () {
@@ -218,13 +223,32 @@ function sendServer (i) {
     xhttp.send ();
     
 }
+var intervalID = null;
+var compteur = 59;
+
+function chronometre () {
+    compteur = 59;
+    intervalID = setInterval (decompte,1000);
+}
+function decompte () {
+    console.log("Salut");
+    if (compteur>=10) {
+	console.log(compteur+">=10");
+	document.getElementById("chrono").innerHTML="00:"+compteur;
+    } else if (compteur==0) {
+	document.getElementById("chrono").innerHTML="00:00";
+	clearInterval(intervalID);
+    } else 	
+	document.getElementById("chrono").innerHTML="00:0"+compteur;
+    compteur--;
+}
 
 function tracerGraphique (message) {
     var json = JSON.parse (message);
     var question = json ["question"];
     var reponses = json["reponses"];
     var equipeCiblee = json ["equipeCiblee"];
-    
+
     console.log (question);
     var graph = document.getElementById ("myChart").getContext ('2d');
   //   // console.log ("MaJ");
@@ -279,6 +303,15 @@ function tracerGraphique (message) {
 	    //  }
 	    
     });
+
+      if (question.texte != questionEnCoursTexte) {
+	  if(intervalID!=null)
+	      clearInterval(intervalID);
+	  console.log ("chrono");
+	  questionEnCoursTexte = question.texte;
+	  chronometre (59);
+    }
+    
 }
 
 function chargerGraphique (titre, question, reponses, equipeCiblee) {

@@ -28,6 +28,8 @@ html
           div(class="card-blue")
             div(class="container-card")
               h2(id="score-bleue") 0
+        div(class="col-lg col-md")
+          h2(id="chrono") 
       div(class="row justify-content-center")
         div(class="col")
           h1(id="resultats")

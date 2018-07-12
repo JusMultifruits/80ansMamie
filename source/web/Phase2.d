@@ -87,11 +87,12 @@ final class GerantDuJeu {
 	this.questionDisponible = !this.questionDisponible;
     }
 
-    void sendNotif () {
-	foreach (tId, team ; this.tableauTIdEquipe)
-	    std.concurrency.send (tId, true);
-       
-    }
+    void sendNotif (bool envoyerAResultat) {
+	foreach (tId, team ; this.tableauTIdEquipe) {
+	    if ((team != 4) || envoyerAResultat)
+		std.concurrency.send (tId, true);
+	}
+     }
 
     Question getQuestionEnCours () {
 	return this.questionEnCours;
@@ -136,6 +137,11 @@ final class GerantDuJeu {
 	this.fixerQuestionEnCours (quest);
 	this.equipeVisee = team;
 	this.faussesReponses = new int[quest.reponses.length];
+    }
+
+    Question creerQuestionVide () {
+	Question quest = Question (BsonObjectID.generate(), "", []);
+	return quest;
     }
 }
 
@@ -186,11 +192,16 @@ void gererInterfaceAdmin (WebSocket socket) {
 	if (msg == "Fin")
 	    fini = true;
 	else {
-	    int quest = parseJSON(msg)["quest"].integer.to!int;
-	    int team = parseJSON(msg)["team"].integer.to!int;
-	    auto question = Collection.allQuestions () [quest];
-	    GerantDuJeu.instance.fixerQuestionEtEquipe (question, team);
-	    GerantDuJeu.instance.sendNotif ();
+	    if (msg == "vide") {
+		GerantDuJeu.instance.fixerQuestionEtEquipe (GerantDuJeu.instance.creerQuestionVide, 2);
+		GerantDuJeu.instance.sendNotif (false);
+	    } else {
+		int quest = parseJSON(msg)["quest"].integer.to!int;
+		int team = parseJSON(msg)["team"].integer.to!int;
+		auto question = Collection.allQuestions () [quest];
+		GerantDuJeu.instance.fixerQuestionEtEquipe (question, team);
+		GerantDuJeu.instance.sendNotif (true);
+	    }
 	}
     }
 }    
