@@ -14,13 +14,23 @@ html
     meta(charset="utf-8")
     meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
     - css ("bootstrap/css/bootstrap.min.css");
+    - css ("css/divider.css");
     //- - css ("css/radios.css");
     
-    body(onLoad="connect('4')")
-      div(class="container")
-        div(class="row justify-content-center")
-          div(class="col")
-            h1(id="resultats")
-        div(class="row justify-content-center")
-          div(class="col")
-            canvas(id="myChart", width="100", height="80")
+  body(onLoad="connect('4')")
+    div(class="container")
+      div(class="row")
+        div(class="col-lg-5 col-md-5")            
+          div(class="card-red")
+            div(class="container-card")
+              h2(id="score-rouge") 0
+        div(class="col-lg-5 col-md-5")
+          div(class="card-blue")
+            div(class="container-card")
+              h2(id="score-bleue") 0
+      div(class="row justify-content-center")
+        div(class="col")
+          h1(id="resultats")
+      div(class="row justify-content-center")
+        div(class="col")
+          canvas(id="myChart", width="100", height="65")

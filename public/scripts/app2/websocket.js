@@ -56,7 +56,12 @@ function ecrireContenu (message, equipe) {
 	break;
     case '4': 
 	console.log("case4");
-	tracerGraphique (message);
+	var json = JSON.parse (message);
+	if (json ['res'] == "vrai") 
+	    tracerGraphique (message);
+	var red = json ["red"], blue = json ["blue"];
+	document.getElementById ("score-rouge").innerHTML = red;
+	document.getElementById ("score-bleue").innerHTML = blue;	
 	break;
     default:
 	console.log("default"); 
@@ -81,7 +86,12 @@ function ecrireListeQuestionsAdmin (message) {
 <label for="fausseRep21">Rep2 Bleue</label><input type="text" name="rep21" value="0" id="fausseRep21">\
 <label for="fausseRep31">Rep3 Bleue</label><input type="text" name="rep31" value="0" id="fausseRep31">\
 <label for="fausseRep41">Rep4 Bleue</label><input type="text" name="rep41" value="0" id="fausseRep41"></div>\
-<button type="submit" class="btn btn-danger" onclick="envoyerFaussesReponses()">Envoyer les fausses réponses </button></div></div>';
+<button type="submit" class="btn btn-danger" onclick="envoyerFaussesReponses()">Envoyer les fausses réponses </button></div>\
+<div class="row">\
+\
+<label for="score_rouge">Score rouge</label><input type="text" name="score_rouge" value="0" id="score_rouge">\
+<label for="score_bleue">Score bleue</label><input type="text" name="score_bleue" value="0" id="score_bleue">\
+<button type="submit" class="btn btn-danger" onclick="envoyerScore()">Envoyer les scores </button>\</div>';
     document.getElementById ("contenu").innerHTML = "";
     var listeQuestions = JSON.parse (message);
     var i = 0;
@@ -95,6 +105,14 @@ function ecrireListeQuestionsAdmin (message) {
 	$("#contenu").append('</ul></div>');
 	i++;
     }
+}
+
+function envoyerScore () {
+    var red = document.getElementById ('score_rouge').value;
+    var blue = document.getElementById ('score_bleue').value;
+    var xhttp = new XMLHttpRequest ();
+    xhttp.open ("GET", "score?red=" + red + "&blue=" + blue, true);
+    xhttp.send ();
 }
 
 function envoyerFaussesReponses () {
@@ -194,9 +212,11 @@ function sendServer (i) {
 }
 
 function tracerGraphique (message) {
-    var question = JSON.parse (message)["question"];
-    var reponses = JSON.parse (message)["reponses"];
-    var equipeCiblee = JSON.parse (message)["equipeCiblee"];
+    var json = JSON.parse (message);
+    var question = json ["question"];
+    var reponses = json["reponses"];
+    var equipeCiblee = json ["equipeCiblee"];
+    
     console.log (question);
     var graph = document.getElementById ("myChart").getContext ('2d');
   //   // console.log ("MaJ");

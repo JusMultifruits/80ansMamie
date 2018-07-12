@@ -13,6 +13,9 @@ struct QuestEtRep {
     Question question;
     int[][2] reponses;
     int equipeCiblee;
+    int red;
+    int blue;
+    string res;
 }
 
 final class GerantDuJeu {
@@ -23,7 +26,8 @@ final class GerantDuJeu {
     private int equipeVisee;
     private int[string][2] reponses; // 2 tableaux de [] cases
     private int[][2] faussesReponses;
-
+    private int[2] score;
+    
     this () {
 	this.questionDisponible = false;
 	this.equipeVisee = 2;
@@ -55,6 +59,14 @@ final class GerantDuJeu {
 	foreach (tId, team; this.tableauTIdEquipe)
 	    if (team == 4)
 		std.concurrency.send (tId, true);
+    }
+
+    void updateScore (int red, int blue) {
+	this.score [0] = red;
+	this.score [1] = blue;
+	foreach (tId, team; this.tableauTIdEquipe)
+	    if (team == 4)
+		std.concurrency.send (tId, false);
     }
 
     void fixerQuestionEnCours (Question question) {
@@ -98,6 +110,10 @@ final class GerantDuJeu {
 	return this.reponses;
     }
 
+    int [2] getScore () {
+	return this.score;
+    }
+    
     int[][2] compteReponse () {
 	int[][2] reps;
 	foreach (team ; 0 .. 2) {
@@ -147,12 +163,14 @@ void phase2WebHandler (scope WebSocket socket) {
 }
 
 void gererInterfaceResultats (WebSocket socket) {
-    receiveOnly!bool ();
-
+    bool res = receiveOnly!bool ();
+    
     auto reponses = GerantDuJeu.instance.compteReponse ();
     auto question = GerantDuJeu.instance.getQuestionEnCours ();
     auto equipeCiblee = GerantDuJeu.instance.getEquipeVisee ();
-    QuestEtRep contenu = {question, reponses, equipeCiblee};
+    auto red = GerantDuJeu.instance.getScore () [0];
+    auto blue = GerantDuJeu.instance.getScore () [1];
+    QuestEtRep contenu = {question, reponses, equipeCiblee, red, blue, res ? "vrai" : "faux"};
     
     socket.send (contenu.serializeToJson ().toString ());
 }
@@ -264,7 +282,16 @@ final class Phase2Controller {
 	    render!("app2/pagePrincipale.dt",login);
     	}
     }
-    
+
+    void getScore (int red, int blue) {
+	if (!this.session || !this.session.isKeySet ("user")) {
+	    render!"app2/login.dt";
+	} else {
+	    GerantDuJeu.instance.updateScore (red, blue);
+	    auto login = this.session.get!Utilisateur("user");
+	    render!("app2/pagePrincipale.dt", login);
+	}
+    }    
 
     void getLogout () {
 	if (this.session && this.session.isKeySet ("user")) {
