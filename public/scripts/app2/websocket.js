@@ -76,16 +76,24 @@ function ecrireListeQuestionsAdmin (message) {
 <form action="resultats" class="col-md" method="get">\
 <input class="form-control btn-info" type="submit" value="Resultats"></form>\
 <div class="row">\
-<label for="fausseRep10">Rep1 Rouge</label><input type="text" name="rep10" value="0" id="fausseRep10">\
-<label for="fausseRep20">Rep2 Rouge</label><input type="text" name="rep20" value="0" id="fausseRep20">\
-<label for="fausseRep30">Rep3 Rouge</label><input type="text" name="rep30" value="0" id="fausseRep30">\
-<label for="fausseRep40">Rep4 Rouge</label><input type="text" name="rep40" value="0" id="fausseRep40">\
+<div class="col-sm">\
+<label for="fausseRep10">Rep1 Rouge</label><input type="text" name="rep10" value="0" id="fausseRep10"></div>\
+<div class="col-sm">\
+<label for="fausseRep20">Rep2 Rouge</label><input type="text" name="rep20" value="0" id="fausseRep20"></div>\
+<div class="col-sm">\
+<label for="fausseRep30">Rep3 Rouge</label><input type="text" name="rep30" value="0" id="fausseRep30"></div>\
+<div class="col-sm">\
+<label for="fausseRep40">Rep4 Rouge</label><input type="text" name="rep40" value="0" id="fausseRep40"></div>\
 </div>\
 <div class="row">\
-<label for="fausseRep11">Rep1 Bleue</label><input type="text" name="rep11" value="0" id="fausseRep11">\
-<label for="fausseRep21">Rep2 Bleue</label><input type="text" name="rep21" value="0" id="fausseRep21">\
-<label for="fausseRep31">Rep3 Bleue</label><input type="text" name="rep31" value="0" id="fausseRep31">\
-<label for="fausseRep41">Rep4 Bleue</label><input type="text" name="rep41" value="0" id="fausseRep41"></div>\
+<div class="col">\
+<label for="fausseRep11">Rep1 Bleue</label><input type="text" name="rep11" value="0" id="fausseRep11"></div>\
+<div class="col">\
+<label for="fausseRep21">Rep2 Bleue</label><input type="text" name="rep21" value="0" id="fausseRep21"></div>\
+<div class="col">\
+<label for="fausseRep31">Rep3 Bleue</label><input type="text" name="rep31" value="0" id="fausseRep31"></div>\
+<div class="col">\
+<label for="fausseRep41">Rep4 Bleue</label><input type="text" name="rep41" value="0" id="fausseRep41"></div></div>\
 <button type="submit" class="btn btn-danger" onclick="envoyerFaussesReponses()">Envoyer les fausses réponses </button></div>\
 <div class="row">\
 \
