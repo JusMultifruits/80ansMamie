@@ -16,12 +16,12 @@ html
       div(class="row")
         div(class="col-md-12")
           h1 Bonjour,
-          p Veuillez entrer votre nom, ainsi que votre date de naissance 
+          p Veuillez entrer votre prénom, ainsi que votre date de naissance 
     
       form(action="login", method="GET") 
         div(class="row")
           div#display1(class="form-group")
-            label(for="id") Nom : 
+            label(for="id") Prénom : 
             input#id(class="form-control", type="text", name="nom")
 
         div(class="row")

@@ -30,7 +30,7 @@ html
                 h3 Equipe : Non déterminée
             div(class="col-md-3")
               div(class="form-group")
-                input(class="form-control", type="submit", value="Deconnexion")
+                input(class="form-control", type="submit", value="Déconnexion")
                 
         div(class="row")
           h2(id="Question")

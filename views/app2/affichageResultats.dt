@@ -19,7 +19,7 @@ html
     
   body(onLoad="connect('4')")
     div(class="container")
-      div(class="row")
+      div(class="row justify-content-center")
         div(class="col-lg-5 col-md-5")            
           div(class="card-red")
             div(class="container-card")

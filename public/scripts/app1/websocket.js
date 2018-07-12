@@ -39,11 +39,11 @@ function getBaseURL () {
 function writeQuestion (message) {
     document.getElementById("Answers").innerHTML = "";
     if (message == "EOF") {
-	document.getElementById ("Question").innerHTML = "Désolé plus de question pour le moment";
+	document.getElementById ("Question").innerHTML = "Merci pour votre participation, vos réponses ont bien été enregistrées";
 	document.getElementById ("suivant").style.display = "none";
 	$("#Answers").append ('<form action="logout" method="GET"> \
                                   <div class="form-group col-md-12"> \
-                                    <input type="submit" class="form-control" value="Deconnexion"/> \
+                                    <input type="submit" class="form-control" value="Déconnexion"/> \
 </div> \
 </form>');
     } else {

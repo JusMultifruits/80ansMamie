@@ -20,7 +20,7 @@ html
           div(class="col-md-3")
           div(class="col-md-3")
             div(class="form-group")
-              input(class="form-control", type="submit", value="Deconnexion")
+              input(class="form-control", type="submit", value="Déconnexion")
     
       form(action="quest", method="GET")
         div(class="row")

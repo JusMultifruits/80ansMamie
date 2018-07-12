@@ -15,9 +15,9 @@ html
       form(action="logout", method="GET")
         div(class="row")
           div(class="form-group")
-            input(class="form-control", type="submit", value="Deconnexion")
+            input(class="form-control", type="submit", value="Déconnexion")
     
-      p désolé il n'y a plus rien à faire pour le moment
+      p Fin
 
     script(src="jquery/jquery.js")
     script(src="bootstrap/js/moment.js")       
