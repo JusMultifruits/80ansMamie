@@ -245,11 +245,17 @@ function tracerGraphique (message) {
     		    ticks : {
     			beginAtZero:true
     		    }
-    		}]
+    		}],
+		xAxes: [{
+		    ticks: {
+			fontSize:18
+		    }
+		}]
     	    },
 	    title: {
 		display: true,
-		text: question.texte
+		text: question.texte,
+		fontSize: 25
 	    },
 	    animation : {
 		duration : 0
